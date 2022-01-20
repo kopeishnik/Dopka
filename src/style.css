@@ -1,0 +1,30 @@
+:root {
+  --in-out-text-decoration-color: #ff0000;
+}
+
+.slidecontainer {
+  width: 620px;
+}
+
+.vid-area {
+  margin: auto;
+  max-width: 620px;
+  text-align: center;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.in-out {
+  text-decoration: underline;
+  text-decoration-color: var(--in-out-text-decoration-color);
+}
+
+.center {
+  text-align: center;
+}

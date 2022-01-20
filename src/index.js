@@ -13,7 +13,7 @@ let audioFile = document.getElementById('audio-file'),
   cutButton = document.getElementById('cut-audio'),
   croppedAudio = document.getElementById('cropped-audio'),
   timeInp = document.getElementById("timeInput2"),
-  actx;
+  audioContext, continuePlay;
 
 //internal variables
 
@@ -27,7 +27,7 @@ audioFile.onchange = function () {
 
   // not really needed in this exact case, but since it is really important in other cases,
   // don't forget to revoke the blobURI when you don't need it
-  audio.onend = function () {
+  audio.onend = () => {
     URL.revokeObjectURL(this.src);
   };
 };
@@ -35,8 +35,8 @@ audioFile.onchange = function () {
 //set cut in
 cutIn.addEventListener(
   'click', () => {
-    var inTime = audio.currentTime;
-    document.getElementById('inTime').innerHTML = inTime;
+    let inTime = audio.currentTime;
+    document.getElementById('inTime').innerHTML = representTime(inTime);
     localStorage.setItem('inTime', inTime);
   },
   false
@@ -46,26 +46,42 @@ cutIn.addEventListener(
 cutOut.addEventListener(
   'click',
   ()=> {
-    var outTime = audio.currentTime;
-    document.getElementById('outTime').innerHTML = outTime;
+    let outTime = audio.currentTime;
+    document.getElementById('outTime').innerHTML = representTime(outTime);
     localStorage.setItem('outTime', outTime);
   },
   false
 );
 
 //show duration
-audio.onloadedmetadata = function () {
-  document.getElementById('vidDuration').innerHTML = audio.duration;
+audio.onloadedmetadata = () => {
+  document.getElementById('vidDuration').innerHTML = representTime(parseFloat(audio.duration));
   document.getElementById('jump').max = audio.duration;
+  document.getElementById('jump').value = 0;
+  document.getElementById('timecode').innerHTML = '0';
+  audio.pause();
 };
 
 //show timecode
 audio.ontimeupdate = () => {
-  var curTimeRounded = Math.round(audio.currentTime * 10000) / 10000;
-  document.getElementById('timecode').innerHTML = curTimeRounded;
+  let curTimeRounded = Math.round(audio.currentTime*1000)/1000;
+  document.getElementById('timecode').innerHTML = representTime(parseFloat(audio.currentTime));
   document.getElementById('jump').value = curTimeRounded;
   document.getElementById('timeInput2').value = curTimeRounded;
 };
+
+function representTime(timeInSeconds){
+  let representation = "",
+    hours = Math.floor(timeInSeconds/3600),
+    minutes = Math.floor(timeInSeconds%3600/60),
+    seconds = Math.floor(timeInSeconds%60),
+    milliseconds = Math.round((timeInSeconds-Math.floor(timeInSeconds))*1000);
+  if (hours!==0) representation += hours+":";
+  if (minutes!==0) representation += minutes+":";
+  representation += seconds;
+  if (milliseconds!==0) representation += "."+milliseconds;
+  return representation;
+}
 
 timeInp.addEventListener('blur', ()=>{
   event.preventDefault();
@@ -120,14 +136,37 @@ plus5.addEventListener(
 );
 
 //set position with slider
+// timelink.addEventListener(
+//   'mousedown',
+//   ()=> {
+//     event.preventDefault();
+//     continuePlay = !audio.paused;
+//     audio.pause();
+//   },
+//   false
+// );
+
+// timelink.addEventListener(
+//   'mouseup',
+//   ()=> {
+//     event.preventDefault();
+//     document.getElementById('timeInput2').value = document.getElementById('jump').value;
+//     audio.currentTime = Math.round(parseFloat(document.getElementById('jump').value)*1000)/1000;
+//     document.getElementById('timeInput2').value = document.getElementById('jump').value;
+//     if (continuePlay) audio.play();
+//   },
+//   false
+// );
+
 timelink.addEventListener(
   'click',
   ()=> {
-    document.getElementById('timeInput2').value = document.getElementById('jump').value;
     event.preventDefault();
-    var continuePlay = !audio.paused;
+    continuePlay = !audio.paused;
     audio.pause();
-    audio.currentTime = document.getElementById('timeInput2').value = document.getElementById('jump').value;
+    document.getElementById('timeInput2').value = document.getElementById('jump').value;
+    audio.currentTime = Math.round(parseFloat(document.getElementById('jump').value)*1000)/1000;
+    document.getElementById('timeInput2').value = document.getElementById('jump').value;
     if (continuePlay) audio.play();
   },
   false
@@ -174,10 +213,10 @@ playbutton.addEventListener(
 
 // cut the audio file
 cutButton.addEventListener('click', () => {
-  actx = new AudioContext();
+  audioContext = new AudioContext();
   const fr = new FileReader();
   fr.onload = function () {
-    var arrayBuffer = this.result;
+    let arrayBuffer = this.result;
     decode(arrayBuffer);
   };
   fr.readAsArrayBuffer(audioFile.files[0]);
@@ -185,13 +224,13 @@ cutButton.addEventListener('click', () => {
 
 // STEP 2: Decode the audio file ---------------------------------------
 function decode(buffer) {
-  actx.decodeAudioData(buffer, split);
+  audioContext.decodeAudioData(buffer, split);
 }
 
 // STEP 3: Split the buffer --------------------------------------------
 function split(abuffer) {
   // calc number of segments and segment length
-  var rate = abuffer.sampleRate,
+  let rate = abuffer.sampleRate,
     inTime = localStorage.getItem('inTime'),
     outTime = localStorage.getItem('outTime'),
     offset = Math.round(inTime * rate),
@@ -201,7 +240,7 @@ function split(abuffer) {
 
 // Convert an audio-buffer segment to a Blob using WAVE representation
 function bufferToWave(abuffer, offset, len) {
-  var numOfChan = abuffer.numberOfChannels,
+  let numOfChan = abuffer.numberOfChannels,
     length = len * numOfChan * 2 + 44,
     buffer = new ArrayBuffer(length),
     view = new DataView(buffer),

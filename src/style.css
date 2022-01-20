@@ -1,5 +1,45 @@
 :root {
-  --in-out-text-decoration-color: #ff0000;
+  --in-out-text-decoration-color: #f00;
+  --input-file-bg: #ffe6cc;
+}
+
+body {
+  align-content: center;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  min-height: 500px;
+  min-width: 1000px;
+  overflow: auto;
+  width: 100%;
+}
+
+#audio-input-container{
+  align-content: center;
+  background: var(--input-file-bg);
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+#audio-file{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 5%;
+}
+
+#duration-container{
+  display: flex;
+  flex-direction: row;
+}
+
+#audio-output-container{
+  flex: 1;
+}
+
+#playa{
+  flex: 1;
 }
 
 .slidecontainer {
@@ -7,17 +47,25 @@
 }
 
 .vid-area {
+  display: flex;
+  flex-direction: column;
   margin: auto;
   max-width: 620px;
   text-align: center;
 }
 
+canvas{
+  height: 0;
+}
+
 .left {
-  float: left;
+  flex: 1;
+  text-align: left;
 }
 
 .right {
-  float: right;
+  flex: 1;
+  text-align: right;
 }
 
 .in-out {

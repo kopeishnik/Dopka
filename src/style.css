@@ -81,7 +81,7 @@ canvas{
 button {
 	border: var(--standart-border) gray;
 	background-color: white;
-	border-radius: 5px;
+	border-radius: 15px;
 	padding: var(--button-padding);
 	cursor: pointer;
 }

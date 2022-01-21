@@ -7,11 +7,12 @@ body {
   align-content: center;
   display: flex;
   flex-direction: column;
-  height: 80vh;
+  height: 97vh;
   min-height: 500px;
   min-width: 1000px;
   overflow: auto;
   width: 100%;
+  margin: 0;
 }
 
 #audio-input-container{
@@ -38,16 +39,13 @@ body {
   flex: 1;
 }
 
-#playa{
-  flex: 1;
-}
-
 .slidecontainer {
   width: 620px;
 }
 
 .vid-area {
   display: flex;
+  flex: 2;
   flex-direction: column;
   margin: auto;
   max-width: 620px;

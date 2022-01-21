@@ -1,3 +1,5 @@
+import { visualize } from "../src/visualizeAudio.js";
+
 //element variables
 let audioFile = document.getElementById('audio-file'),
   audio = document.getElementById('audio'),
@@ -13,7 +15,7 @@ let audioFile = document.getElementById('audio-file'),
   cutButton = document.getElementById('cut-audio'),
   croppedAudio = document.getElementById('cropped-audio'),
   timeInp = document.getElementById("timeInput2"),
-  audioContext, continuePlay;
+  audioContext, continuePlay, audioBuffer;
 
 //internal variables
 
@@ -36,7 +38,7 @@ audioFile.onchange = function () {
 cutIn.addEventListener(
   'click', () => {
     let inTime = audio.currentTime;
-    document.getElementById('inTime').innerHTML = representTime(inTime);
+    document.getElementById('inTime').textContent = representTime(inTime);
     localStorage.setItem('inTime', inTime);
   },
   false
@@ -47,7 +49,7 @@ cutOut.addEventListener(
   'click',
   ()=> {
     let outTime = audio.currentTime;
-    document.getElementById('outTime').innerHTML = representTime(outTime);
+    document.getElementById('outTime').textContent = representTime(outTime);
     localStorage.setItem('outTime', outTime);
   },
   false
@@ -55,17 +57,17 @@ cutOut.addEventListener(
 
 //show duration
 audio.onloadedmetadata = () => {
-  document.getElementById('vidDuration').innerHTML = representTime(parseFloat(audio.duration));
+  document.getElementById('vidDuration').textContent = representTime(parseFloat(audio.duration));
   document.getElementById('jump').max = audio.duration;
   document.getElementById('jump').value = 0;
-  document.getElementById('timecode').innerHTML = '0';
+  document.getElementById('timeCode').textContent = '0';
   audio.pause();
 };
 
-//show timecode
+//show timeCode
 audio.ontimeupdate = () => {
   let curTimeRounded = Math.round(audio.currentTime*1000)/1000;
-  document.getElementById('timecode').innerHTML = representTime(parseFloat(audio.currentTime));
+  document.getElementById('timeCode').textContent = representTime(parseFloat(audio.currentTime));
   document.getElementById('jump').value = curTimeRounded;
   document.getElementById('timeInput2').value = curTimeRounded;
 };
@@ -196,7 +198,7 @@ reset.addEventListener(
     document.getElementById('jump').value = 0;
     localStorage.setItem('outTime', audio.duration);
     localStorage.setItem('inTime', '0');
-    document.getElementById('outTime').innerHTML = document.getElementById('inTime').innerHTML = "";
+    document.getElementById('outTime').textContent = document.getElementById('inTime').textContent = "";
 
   },
   false
@@ -224,7 +226,8 @@ cutButton.addEventListener('click', () => {
 
 // STEP 2: Decode the audio file ---------------------------------------
 function decode(buffer) {
-  audioContext.decodeAudioData(buffer, split);
+  audioBuffer = audioContext.decodeAudioData(buffer, split);
+  visualize(audioBuffer);
 }
 
 // STEP 3: Split the buffer --------------------------------------------

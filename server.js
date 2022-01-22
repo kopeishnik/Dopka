@@ -1,5 +1,7 @@
-const http = require('http')
+//const http = require('http')
 // const ffmpeg = require('fluent-ffmpeg')
+
+import http from 'http';
 var audioBufferSlice = require('audiobuffer-slice');
 
 const server = http.createServer((req, res) => {
@@ -15,11 +17,11 @@ const server = http.createServer((req, res) => {
         else {
             audioBufferSlice(fname, req.start, req.stop, function(error, slicedAudioBuffer) {
                 if (error) {
-                  console.error(error)
+                  console.error(error);
                 } else {
-                  source.buffer = slicedAudioBuffer
+                  source.buffer = slicedAudioBuffer;
                 }
-            }
+            });
         }
         res.attachment('output.mp3')
         res.setHeader('Content-type', 'text/plain');

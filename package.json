@@ -12,7 +12,9 @@
     "format:fix": "prettier --write . --ignore-path .gitignore",
     "lint:style": "npx stylelint \"src*/*.+(scss|css|svelte)\" --ignore-path .gitignore ",
     "lint:style:fix": "stylelint \"src*/*.+(scss|css|svelte)\" --fix --ignore-path .gitignore",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "start" : "node server.js",
+    "devstart" : "nodemon server.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",

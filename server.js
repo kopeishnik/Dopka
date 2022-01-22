@@ -21,7 +21,6 @@ const storageConfig = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
-app.use(express.static(__dirname));
 app.use(multer({ storage: storageConfig }).single('filedata'));
 
 

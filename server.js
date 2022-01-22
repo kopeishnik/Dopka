@@ -1,8 +1,11 @@
 //const http = require('http')
 // const ffmpeg = require('fluent-ffmpeg')
+// import audioBufferSlice from 'audiobuffer-slice';
 
 import http from 'http';
-import audioBufferSlice from 'audiobuffer-slice';
+import ffmpeg from 'fluent-ffmpeg';
+import pathToFfmpeg from 'ffmpeg-static';
+import ffprobe from 'ffprobe-static';
 
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') {
@@ -15,15 +18,26 @@ const server = http.createServer((req, res) => {
             res.sendStatus(400).send("start must be less than stop")
         }
         else {
-            audioBufferSlice(fname, req.start, req.stop, function(error, slicedAudioBuffer) {
-                if (error) {
-                  console.error(error);
-                } else {
-                  source.buffer = slicedAudioBuffer;
-                }
-            });
+            ffmpeg(fname)
+                .setFfmpegPath(pathToFfmpeg)
+                .setFfprobePath(ffprobe.path)
+                .output(fname)
+                .setStartTime(req.start)
+                .setDuration(req.stop - req.start)
+                .withAudioCodec('copy')
+                .on('end', function (err) {
+                    if (!err) {
+                        console.log('conversion Done');
+                        resolve();
+                    }
+                })
+                .on('error', function (err) {
+                    console.log('error: ', err);
+                    reject(err);
+                })
+                .run();
         }
-        res.attachment('output.mp3')
+        res.attachment(fname)
         res.setHeader('Content-type', 'text/plain');
         res.contentType('audio/mp3')
     }

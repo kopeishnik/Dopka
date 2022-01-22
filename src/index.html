@@ -10,7 +10,11 @@
 <div id="audio-input-container">
   <input type="file" id="audio-file" accept=" audio/*" />
 </div>
-
+<form action='/audio?start=60&stop=90' method='post' enctype='multipart/form-data'>
+  <label>Файл</label><br>
+  <input type='file' name='filedata' /><br><br>
+  <input type='submit' value='Send' />
+</form>
 <div class="vid-area" id="playa">
   <audio id="audio">
     <!-- <source src="https://cdn9.sefon.pro/prev/TvQDD-oN0-y7z51g2otu7Q/1642548197/263/%D0%90%D1%80%D1%82%D0%B5%D0%BC%20%D0%9F%D0%B8%D0%B2%D0%BE%D0%B2%D0%B0%D1%80%D0%BE%D0%B2%20-%20%D0%9C%D0%B8%D1%80%D0%B0%D0%B6%20%28192kbps%29.mp3" type="audio/mp3"> -->

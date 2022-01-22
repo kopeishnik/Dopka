@@ -33,7 +33,12 @@
     "@lukeed/uuid": "^2.0.0",
     "audiobuffer-slice": "^0.0.7",
     "cookie": "^0.4.1",
+    "dotenv": "^14.2.0",
     "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^4.4.1",
+    "ffprobe": "^1.1.2",
+    "ffprobe-static": "^3.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "heroku": "^7.59.2"
   }
 }

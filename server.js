@@ -2,7 +2,7 @@
 // const ffmpeg = require('fluent-ffmpeg')
 
 import http from 'http';
-var audioBufferSlice = require('audiobuffer-slice');
+import audioBufferSlice from 'audiobuffer-slice';
 
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') {

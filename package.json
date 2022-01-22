@@ -11,8 +11,8 @@
     "format:fix": "prettier --write . --ignore-path .gitignore",
     "lint:style": "npx stylelint \"src*/*.+(scss|css|svelte)\" --ignore-path .gitignore ",
     "lint:style:fix": "stylelint \"src*/*.+(scss|css|svelte)\" --fix --ignore-path .gitignore",
-    "start" : "node server.js",
-    "devstart" : "nodemon server.js"
+    "start": "node server.js",
+    "devstart": "nodemon server.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
@@ -31,6 +31,9 @@
   "dependencies": {
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
-    "cookie": "^0.4.1"
+    "audiobuffer-slice": "^0.0.7",
+    "cookie": "^0.4.1",
+    "ffmpeg": "^0.0.4",
+    "heroku": "^7.59.2"
   }
 }

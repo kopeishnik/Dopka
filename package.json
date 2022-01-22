@@ -5,10 +5,6 @@
     "node": "14.x"
   },
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
     "lint": "eslint . --no-error-on-unmatched-pattern --ignore-path .gitignore",
     "lint:fix": "npm run lint -- --fix --ignore-path .gitignore",
     "format": "prettier . --ignore-path .gitignore --plugin-search-dir=. .",

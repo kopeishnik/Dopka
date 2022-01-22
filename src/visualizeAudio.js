@@ -47,7 +47,7 @@ const normalizeData = filteredData => {
  */
 const draw = normalizedData => {
   // set up the canvas
-  const canvas = document.querySelector("canvas");
+  const canvas = document.getElementById("visualize");
   const dpr = window.devicePixelRatio || 1;
   const padding = 20;
   canvas.width = canvas.offsetWidth * dpr;

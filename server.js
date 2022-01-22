@@ -69,6 +69,8 @@ const handleStatic = ( req, res ) => {
 
 const server = http.createServer(( req, res ) => {
   const url = req.url;
+
+
   if ( url === '/audio' ) {
     handleAudio(req, res);
   } else {

@@ -28,13 +28,12 @@
   "dependencies": {
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
-    "audiobuffer-slice": "^0.0.7",
     "cookie": "^0.4.1",
     "dotenv": "^14.2.0",
-    "ffmpeg": "^0.0.4",
+    "express": "^4.17.2",
     "ffmpeg-static": "^4.4.1",
-    "ffprobe": "^1.1.2",
     "ffprobe-static": "^3.0.0",
-    "fluent-ffmpeg": "^2.1.2"
-  }
+    "fluent-ffmpeg": "^2.1.2",
+    "nodemon": "^2.0.15"
+}
 }

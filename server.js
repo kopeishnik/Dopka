@@ -16,18 +16,8 @@ app.get('/audio', ( req, res ) => {
   });
 });
 
+app.use(express.static(path.join(__dirname, 'src')));
 
-app.get('/style.css', ( req, res ) => {
-  res.sendFile(path.join(__dirname, 'src', 'style.css'));
-});
-
-app.get('/index.js', ( req, res ) => {
-  res.sendFile(path.join(__dirname, 'src', 'index.js'));
-});
-
-app.get('/', ( req, res ) => {
-  res.sendFile(path.join(__dirname, 'src', 'index.html'));
-});
 
 app.listen(PORT, () => {
   console.log(`The server is running on port:${ PORT }...`);

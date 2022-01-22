@@ -1,4 +1,4 @@
-import { visualize } from "../src/visualizeAudio.js";
+import { visualizeAudio } from './visualizeAudio.js';
 
 //element variables
 let audioFile = document.getElementById('audio-file'),
@@ -14,30 +14,29 @@ let audioFile = document.getElementById('audio-file'),
   cutOut = document.getElementById('cutOut'),
   cutButton = document.getElementById('cut-audio'),
   croppedAudio = document.getElementById('cropped-audio'),
-  timeInp = document.getElementById("timeInput2"),
+  timeInp = document.getElementById('timeInput2'),
   audioContext, continuePlay;
 
 //internal variables
 
 // upload audio file
-audioFile.onchange = function () {
-  if (this.files[0].size > 20971520) {
+audioFile.addEventListener('change', ( { target } ) => {
+  if ( !target.files.length ) return;
+
+  if ( target.files[0].size > 20971520 ) {
     alert('File is bigger than 20Mb!');
     this.value = '';
   }
-  audio.src = URL.createObjectURL(this.files[0]);
+
+  const urlObj = URL.createObjectURL(target.files[0]);
+  audio.src = urlObj;
+
   audioContext = new AudioContext();
-  const fr = new FileReader();
-  fr.onload = function () {
-    let arrayBuffer = this.result;
-    visualize(arrayBuffer);
-  };
-  // not really needed in this exact case, but since it is really important in other cases,
-  // don't forget to revoke the blobURI when you don't need it
-  audio.onend = () => {
-    URL.revokeObjectURL(this.src);
-  };
-};
+  visualizeAudio(urlObj, audioContext);
+  audio.addEventListener('load', () => {
+    URL.revokeObjectURL(urlObj);
+  });
+});
 
 //set cut in
 cutIn.addEventListener(
@@ -46,18 +45,18 @@ cutIn.addEventListener(
     document.getElementById('inTime').textContent = representTime(inTime);
     localStorage.setItem('inTime', inTime);
   },
-  false
+  false,
 );
 
 //set cut out
 cutOut.addEventListener(
   'click',
-  ()=> {
+  () => {
     let outTime = audio.currentTime;
     document.getElementById('outTime').textContent = representTime(outTime);
     localStorage.setItem('outTime', outTime);
   },
-  false
+  false,
 );
 
 //show duration
@@ -71,75 +70,75 @@ audio.onloadedmetadata = () => {
 
 //show timeCode
 audio.ontimeupdate = () => {
-  let curTimeRounded = Math.round(audio.currentTime*1000)/1000;
+  let curTimeRounded = Math.round(audio.currentTime * 1000) / 1000;
   document.getElementById('timeCode').textContent = representTime(parseFloat(audio.currentTime));
   document.getElementById('jump').value = curTimeRounded;
   document.getElementById('timeInput2').value = curTimeRounded;
 };
 
-function representTime(timeInSeconds){
-  let representation = "",
-    hours = Math.floor(timeInSeconds/3600),
-    minutes = Math.floor(timeInSeconds%3600/60),
-    seconds = Math.floor(timeInSeconds%60),
-    milliseconds = Math.round((timeInSeconds-Math.floor(timeInSeconds))*1000);
-  if (hours!==0) representation += hours+":";
-  if (minutes!==0) representation += minutes+":";
+function representTime( timeInSeconds ) {
+  let representation = '',
+    hours = Math.floor(timeInSeconds / 3600),
+    minutes = Math.floor(timeInSeconds % 3600 / 60),
+    seconds = Math.floor(timeInSeconds % 60),
+    milliseconds = Math.round((timeInSeconds - Math.floor(timeInSeconds)) * 1000);
+  if ( hours !== 0 ) representation += hours + ':';
+  if ( minutes !== 0 ) representation += minutes + ':';
   representation += seconds;
-  if (milliseconds!==0) representation += "."+milliseconds;
+  if ( milliseconds !== 0 ) representation += '.' + milliseconds;
   return representation;
 }
 
-timeInp.addEventListener('blur', ()=>{
+timeInp.addEventListener('blur', () => {
   event.preventDefault();
   audio.currentTime = parseFloat(timeInp.value);
-  document.getElementById("jump").value = parseFloat(timeInp.value);
+  document.getElementById('jump').value = parseFloat(timeInp.value);
 });
 
 //-5 button
 minus5.addEventListener(
   'click',
-  ()=> {
+  () => {
     event.preventDefault();
     audio.play();
     audio.pause();
     audio.currentTime = audio.currentTime - 5;
   },
-  false
+  false,
 );
 
 //-1 button
 minus1.addEventListener(
   'click',
-  ()=> {
+  () => {
     event.preventDefault();
     audio.play();
     audio.pause();
     audio.currentTime = audio.currentTime - 1;
   },
-  false
+  false,
 );
 
 //+1 button
 plus1.addEventListener(
   'click',
-  ()=> {
+  () => {
     event.preventDefault();
     audio.play();
     audio.pause();
     audio.currentTime = audio.currentTime + 1;
   },
-  false
+  false,
 );
 
 //+5 button
 plus5.addEventListener(
   'click',
-  ()=> {
+  () => {
     audio.pause();
     audio.currentTime = audio.currentTime + 5;
   },
-  false
+  false,
 );
 
 //set position with slider
@@ -167,20 +166,20 @@ plus5.addEventListener(
 
 timelink.addEventListener(
   'click',
-  ()=> {
+  () => {
     event.preventDefault();
     continuePlay = !audio.paused;
     audio.pause();
     document.getElementById('timeInput2').value = document.getElementById('jump').value;
-    audio.currentTime = Math.round(parseFloat(document.getElementById('jump').value)*1000)/1000;
+    audio.currentTime = Math.round(parseFloat(document.getElementById('jump').value) * 1000) / 1000;
     document.getElementById('timeInput2').value = document.getElementById('jump').value;
-    if (continuePlay) audio.play();
+    if ( continuePlay ) audio.play();
   },
-  false
+  false,
 );
 
-function playOrPause(){
-  if (audio.paused) {
+function playOrPause() {
+  if ( audio.paused ) {
     audio.play();
   } else {
     audio.pause();
@@ -190,39 +189,41 @@ function playOrPause(){
 //play on click audio press
 audio.addEventListener(
   'click',
-  ()=> {playOrPause();},
-  false
+  () => {
+    playOrPause();
+  },
+  false,
 );
 
 //reset
 reset.addEventListener(
   'click',
-  ()=> {
+  () => {
     audio.pause();
     audio.currentTime = 0;
     document.getElementById('jump').value = 0;
     localStorage.setItem('outTime', audio.duration);
     localStorage.setItem('inTime', '0');
-    document.getElementById('outTime').textContent = document.getElementById('inTime').textContent = "";
+    document.getElementById('outTime').textContent = document.getElementById('inTime').textContent = '';
 
   },
-  false
+  false,
 );
 
 // play audio
 playbutton.addEventListener(
   'click',
   () => {
-    playOrPause()
+    playOrPause();
   },
-  false
+  false,
 );
 
 // cut the audio file
 cutButton.addEventListener('click', () => {
   audioContext = new AudioContext();
   const fr = new FileReader();
-  fr.onload = function () {
+  fr.onload = function() {
     let arrayBuffer = this.result;
     decode(arrayBuffer);
   };
@@ -230,12 +231,12 @@ cutButton.addEventListener('click', () => {
 });
 
 // STEP 2: Decode the audio file ---------------------------------------
-function decode(buffer) {
+function decode( buffer ) {
   audioContext.decodeAudioData(buffer, split);
 }
 
 // STEP 3: Split the buffer --------------------------------------------
-function split(abuffer) {
+function split( abuffer ) {
   // calc number of segments and segment length
   let rate = abuffer.sampleRate,
     inTime = localStorage.getItem('inTime'),
@@ -246,7 +247,7 @@ function split(abuffer) {
 }
 
 // Convert an audio-buffer segment to a Blob using WAVE representation
-function bufferToWave(abuffer, offset, len) {
+function bufferToWave( abuffer, offset, len ) {
   let numOfChan = abuffer.numberOfChannels,
     length = len * numOfChan * 2 + 44,
     buffer = new ArrayBuffer(length),
@@ -274,10 +275,10 @@ function bufferToWave(abuffer, offset, len) {
   setUint32(length - pos - 4); // chunk length
 
   // write interleaved data
-  for (i = 0; i < abuffer.numberOfChannels; i++) channels.push(abuffer.getChannelData(i));
+  for ( i = 0; i < abuffer.numberOfChannels; i++ ) channels.push(abuffer.getChannelData(i));
 
   while (pos < length) {
-    for (i = 0; i < numOfChan; i++) {
+    for ( i = 0; i < numOfChan; i++ ) {
       // interleave channels
       sample = Math.max(-1, Math.min(1, channels[i][offset])); // clamp
       // sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; // scale to 16-bit signed int
@@ -291,12 +292,12 @@ function bufferToWave(abuffer, offset, len) {
   // create Blob
   return new Blob([buffer], { type: 'audio/wav' });
 
-  function setUint16(data) {
+  function setUint16( data ) {
     view.setUint16(pos, data, true);
     pos += 2;
   }
 
-  function setUint32(data) {
+  function setUint32( data ) {
     view.setUint32(pos, data, true);
     pos += 4;
   }

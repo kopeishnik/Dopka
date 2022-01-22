@@ -1,5 +1,12 @@
-export function visualize(audioContext, buffer){
-  draw(normalizeData(filterData(audioContext.decodeAudioData(buffer))));
+export const visualizeAudio = (url, audioContext) => {
+  fetch(url)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    .then(audioBuffer => visualize(audioBuffer));
+}
+
+export function visualize(buffer){
+  draw(normalizeData(filterData(buffer)));
 }
 
 /**

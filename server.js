@@ -1,17 +1,29 @@
 const http = require('http')
-const ffmpeg = require('fluent-ffmpeg')
+// const ffmpeg = require('fluent-ffmpeg')
+var audioBufferSlice = require('audiobuffer-slice');
 
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') {
-        res.contentType('audio/mp3')
-        res.attachment('output.mp3')
-        req.files.mp3.mv('tmp/' + req.files.mp3.name, function(err) {
-            if (err) return res.sendStatus(500).send(err)
+        var fname = `tmp/${req.files.mp3.name}`
+        req.files.mp3.mv(fname, function(error) {
+            if (error) return res.sendStatus(500).send(err)
         })
 
-        //trim here
-
-        //return then
+        if (req.start < req.stop) {
+            res.sendStatus(400).send("start must be less than stop")
+        }
+        else {
+            audioBufferSlice(fname, req.start, req.stop, function(error, slicedAudioBuffer) {
+                if (error) {
+                  console.error(error)
+                } else {
+                  source.buffer = slicedAudioBuffer
+                }
+            }
+        }
+        res.attachment('output.mp3')
+        res.setHeader('Content-type', 'text/plain');
+        res.contentType('audio/mp3')
     }
     else {
         res.writeHead(500, { 'Content-Type': 'application/json' })

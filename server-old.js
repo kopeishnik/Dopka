@@ -6,10 +6,11 @@ import http from 'http';
 import ffmpeg from 'fluent-ffmpeg';
 import pathToFfmpeg from 'ffmpeg-static';
 import ffprobe from 'ffprobe-static';
+import { randomUUID } from 'crypto';
 
 const server = http.createServer((req, res) => {
     if (req.method === 'POST') {
-        var fname = `tmp/${req.files.mp3.name}`
+        const fname = `${os.tmpdir()}/${randomUUID()}.mp3`
         req.files.mp3.mv(fname, function(error) {
             if (error) return res.sendStatus(500).send(err)
         })

@@ -46,8 +46,8 @@ app.post('/audio', ( req, res ) => {
     .setFfmpegPath(pathToFfmpeg)
     .setFfprobePath(ffprobe.path)
     .output(filePath)
-    .setStartTime(start * 1)
-    .setDuration(stop - start)
+    .setStartTime(start * 1000)
+    .setDuration(stop * 1000 - start * 1000)
     .withAudioCodec('copy')
     .on('end', function( err ) {
       if ( !err ) {
@@ -64,18 +64,7 @@ app.post('/audio', ( req, res ) => {
 });
 
 
-app.get('/style.css', ( req, res ) => {
-  res.sendFile(path.join(__dirname, 'src', 'style.css'));
-});
-
-app.get('/index.js', ( req, res ) => {
-  res.sendFile(path.join(__dirname, 'src', 'index.js'));
-});
-
-app.get('/', ( req, res ) => {
-  res.sendFile(path.join(__dirname, 'src', 'index.html'));
-});
-
+app.use(express.static(path.join(__dirname, 'src')));
 app.listen(PORT, () => {
   console.log(`The server is running on port:${ PORT }...`);
 });

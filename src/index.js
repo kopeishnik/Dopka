@@ -15,7 +15,7 @@ let audioFile = document.getElementById('audio-file'),
   cutButton = document.getElementById('cut-audio'),
   croppedAudio = document.getElementById('cropped-audio'),
   timeInp = document.getElementById("timeInput2"),
-  audioContext, continuePlay, audioBuffer;
+  audioContext, continuePlay;
 
 //internal variables
 
@@ -26,7 +26,12 @@ audioFile.onchange = function () {
     this.value = '';
   }
   audio.src = URL.createObjectURL(this.files[0]);
-
+  audioContext = new AudioContext();
+  const fr = new FileReader();
+  fr.onload = function () {
+    let arrayBuffer = this.result;
+    visualize(arrayBuffer);
+  };
   // not really needed in this exact case, but since it is really important in other cases,
   // don't forget to revoke the blobURI when you don't need it
   audio.onend = () => {
@@ -226,8 +231,7 @@ cutButton.addEventListener('click', () => {
 
 // STEP 2: Decode the audio file ---------------------------------------
 function decode(buffer) {
-  audioBuffer = audioContext.decodeAudioData(buffer, split);
-  visualize(audioBuffer);
+  audioContext.decodeAudioData(buffer, split);
 }
 
 // STEP 3: Split the buffer --------------------------------------------

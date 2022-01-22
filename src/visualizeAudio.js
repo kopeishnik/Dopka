@@ -1,5 +1,5 @@
-export function visualize(audioBuffer){
-  draw(normalizeData(filterData(audioBuffer)));
+export function visualize(audioContext, buffer){
+  draw(normalizeData(filterData(audioContext.decodeAudioData(buffer))));
 }
 
 /**

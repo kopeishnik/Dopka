@@ -1,6 +1,9 @@
 {
   "name": "mp3-strip",
   "version": "0.0.1",
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",

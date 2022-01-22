@@ -1,9 +1,6 @@
 {
   "name": "mp3-strip",
   "version": "0.0.1",
-  "engines": {
-    "node": "14.x"
-  },
   "scripts": {
     "lint": "eslint . --no-error-on-unmatched-pattern --ignore-path .gitignore",
     "lint:fix": "npm run lint -- --fix --ignore-path .gitignore",

@@ -1,11 +1,11 @@
-const visualizeAudio = (url, audioContext) => {
+const visualizeAudio = ( url, audioContext ) => {
   fetch(url)
     .then(response => response.arrayBuffer())
     .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
     .then(audioBuffer => visualize(audioBuffer));
-}
+};
 
-function visualize(buffer){
+function visualize( buffer ) {
   draw(normalizeData(filterData(buffer)));
 }
 
@@ -19,10 +19,10 @@ const filterData = audioBuffer => {
   const samples = 70; // Number of samples we want to have in our final data set
   const blockSize = Math.floor(rawData.length / samples); // the number of samples in each subdivision
   const filteredData = [];
-  for (let i = 0; i < samples; i++) {
+  for ( let i = 0; i < samples; i++ ) {
     let blockStart = blockSize * i; // the location of the first sample in the block
     let sum = 0;
-    for (let j = 0; j < blockSize; j++) {
+    for ( let j = 0; j < blockSize; j++ ) {
       sum = sum + Math.abs(rawData[blockStart + j]); // find the sum of all the samples in the block
     }
     filteredData.push(sum / blockSize); // divide the sum by the block size to get the average
@@ -38,7 +38,7 @@ const filterData = audioBuffer => {
 const normalizeData = filteredData => {
   const multiplier = Math.pow(Math.max(...filteredData), -1);
   return filteredData.map(n => n * multiplier);
-}
+};
 
 /**
  * Draws the audio file into a canvas element.
@@ -47,23 +47,23 @@ const normalizeData = filteredData => {
  */
 const draw = normalizedData => {
   // set up the canvas
-  const canvas = document.querySelector("canvas");
+  const canvas = document.querySelector('canvas');
   const dpr = window.devicePixelRatio || 1;
   const padding = 20;
   canvas.width = canvas.offsetWidth * dpr;
   canvas.height = (canvas.offsetHeight + padding * 2) * dpr;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
   ctx.translate(0, canvas.offsetHeight / 2 + padding); // set Y = 0 to be in the middle of the canvas
 
   // draw the line segments
   const width = canvas.offsetWidth / normalizedData.length;
-  for (let i = 0; i < normalizedData.length; i++) {
+  for ( let i = 0; i < normalizedData.length; i++ ) {
     const x = width * i;
     let height = normalizedData[i] * canvas.offsetHeight - padding;
-    if (height < 0) {
+    if ( height < 0 ) {
       height = 0;
-    } else if (height > canvas.offsetHeight / 2) {
+    } else if ( height > canvas.offsetHeight / 2 ) {
       height = height > canvas.offsetHeight / 2;
     }
     drawLineSegment(ctx, x, height, width, (i + 1) % 2);
@@ -78,9 +78,9 @@ const draw = normalizedData => {
  * @param {number} width the desired width of the line segment
  * @param {boolean} isEven whether or not the segmented is even-numbered
  */
-const drawLineSegment = (ctx, x, height, width, isEven) => {
+const drawLineSegment = ( ctx, x, height, width, isEven ) => {
   ctx.lineWidth = 1; // how thick the line is
-  ctx.strokeStyle = "#fff"; // what color our line is
+  ctx.strokeStyle = '#FFFFFF'; // what color our line is
   ctx.beginPath();
   height = isEven ? height : -height;
   ctx.moveTo(x, 0);
@@ -91,16 +91,16 @@ const drawLineSegment = (ctx, x, height, width, isEven) => {
 };
 
 
-const sendAudio = (buffer) => {
+const sendAudio = ( buffer ) => {
   fetch('http://localhost:5000/audio', {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "audio/mp3"
+      'Content-Type': 'audio/mp3',
     },
-    body: buffer
+    body: buffer,
   })
     .then(data => console.log(data));
-}
+};
 
 //element variables
 let audioFile = document.getElementById('audio-file'),
@@ -117,9 +117,25 @@ let audioFile = document.getElementById('audio-file'),
   cutButton = document.getElementById('cut-audio'),
   croppedAudio = document.getElementById('cropped-audio'),
   timeInp = document.getElementById('timeInput2'),
+  audioInputForm = document.getElementById('audio-input-form'),
   audioContext, continuePlay;
 
 //internal variables
+
+audioInputForm.addEventListener('submit', event => {
+  event.preventDefault();
+
+  const formData = new FormData(event.target);
+  const inTime = localStorage.getItem('inTime');
+  const outTime = localStorage.getItem('outTime');
+  fetch(`/crop-audio?start=${inTime}&stop=${outTime}`, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer, split))
+    // .then(audioBuffer => croppedAudio.src = URL.createObjectURL(audioBuffer));
+});
 
 // upload audio file
 audioFile.addEventListener('change', ( { target } ) => {
@@ -322,15 +338,15 @@ playbutton.addEventListener(
 );
 
 // cut the audio file
-cutButton.addEventListener('click', () => {
-  audioContext = new AudioContext();
-  const fr = new FileReader();
-  fr.onload = function() {
-    let arrayBuffer = this.result;
-    decode(arrayBuffer);
-  };
-  fr.readAsArrayBuffer(audioFile.files[0]);
-});
+// cutButton.addEventListener('click', () => {
+//   audioContext = new AudioContext();
+//   const fr = new FileReader();
+//   fr.onload = function() {
+//     let arrayBuffer = this.result;
+//     decode(arrayBuffer);
+//   };
+//   fr.readAsArrayBuffer(audioFile.files[0]);
+// });
 
 // STEP 2: Decode the audio file ---------------------------------------
 function decode( buffer ) {

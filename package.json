@@ -1,18 +1,18 @@
 {
   "name": "mp3-strip",
   "version": "0.0.1",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
     "lint": "eslint . --no-error-on-unmatched-pattern --ignore-path .gitignore",
     "lint:fix": "npm run lint -- --fix --ignore-path .gitignore",
     "format": "prettier . --ignore-path .gitignore --plugin-search-dir=. .",
     "format:fix": "prettier --write . --ignore-path .gitignore",
     "lint:style": "npx stylelint \"src*/*.+(scss|css|svelte)\" --ignore-path .gitignore ",
     "lint:style:fix": "stylelint \"src*/*.+(scss|css|svelte)\" --fix --ignore-path .gitignore",
-    "prepare": "husky install"
+    "start": "node server.js",
+    "devstart": "nodemon server.js"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
@@ -31,6 +31,12 @@
   "dependencies": {
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
-    "cookie": "^0.4.1"
-  }
+    "cookie": "^0.4.1",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2",
+    "ffmpeg-static": "^4.4.1",
+    "ffprobe-static": "^3.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "nodemon": "^2.0.15"
+}
 }
